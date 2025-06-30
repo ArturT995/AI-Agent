@@ -2,7 +2,7 @@ import os
 from google import genai
 from dotenv import load_dotenv
 import sys
-
+from google.genai import types
 
 
 def main():
@@ -13,10 +13,17 @@ def main():
     if len(sys.argv) < 2:
         print("No input detected, ask something")
         exit(1)
+    
+    args = sys.argv[1:]
+    user_prompt = " ".join(args)
+    
+    messages = [types.Content(role="user", parts=[types.Part(text=user_prompt)]), ]
+    
 
     response = client.models.generate_content(
-        model='gemini-2.0-flash-001', contents = sys.argv[1]
+        model='gemini-2.0-flash-001', contents=messages,
     )
+
 
     print(response.text)
     print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
